@@ -3,7 +3,6 @@
 <head>
     {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <meta charset="UTF-8">
     <title>Dealership Review - Best Cars</title>
 </head>
@@ -12,17 +11,17 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="collapse navbar-collapse" id="navbarNav">
             <div class="navbar-nav container">
-                <a class="nav-link active" href="/">🚗 Best Cars</a>
-                <a class="nav-link" href="{% url 'djangoapp:about' %}">🚙 About Us</a>
+                <a class="nav-link" href="{% url 'djangoapp:index' %}">🚗 Best Cars</a>
+                <a class="nav-link active" href="#">🚙 About Us</a>
                 <a class="nav-link" href="{% url 'djangoapp:contact' %}">📞 Contact Us</a>
             </div>
         </div>
     </nav>
 
-    <!-- Dealer table -->
     <section class="container mt-1">
-        <h1>Dealer table</h1>
-        <p>Work in progress</p>
+        <h1>
+            Welcome to Best Cars dealership, home to the best cars in North America. We sell domestic and imported cars at reasonable prices.
+        </h1>
     </section>
 
 </body>

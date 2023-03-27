@@ -1,8 +1,21 @@
-# Final Project Template
+# Setup local enviroment
+```
+mkvirtualenv cloud-app-capstone
+workon .
+pip install -r server/requirements.txt
+```
 
-The final project for this course has several steps that you must complete. 
-To give you an overview of the whole project, all the high-level steps are listed below. 
-The project is then divided into several smaller labs that give the detailed instructions for each step. 
+# Run local dev server
+```
+cd server
+python manage.py runserver
+```
+
+# Cloud App Project Template
+
+The final project for this course has several steps that you must complete.
+To give you an overview of the whole project, all the high-level steps are listed below.
+The project is then divided into several smaller labs that give the detailed instructions for each step.
 You must complete all the labs to successfully complete the project.
 
 ## Project Breakdown
@@ -25,7 +38,7 @@ You must complete all the labs to successfully complete the project.
 1. Create cloud functions to manage dealers and reviews
 2. Create Django models and views to manage car model and car make
 3. Create Django proxy services and views to integrate dealers, reviews, and cars together
- 
+
 **Add dynamic pages with Django templates**
 1. Create a page that shows all the dealers
 2. Create a page that show reviews for a selected dealer

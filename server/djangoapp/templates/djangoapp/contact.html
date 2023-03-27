@@ -3,7 +3,6 @@
 <head>
     {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <meta charset="UTF-8">
     <title>Dealership Review - Best Cars</title>
 </head>
@@ -12,17 +11,24 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="collapse navbar-collapse" id="navbarNav">
             <div class="navbar-nav container">
-                <a class="nav-link active" href="/">🚗 Best Cars</a>
+                <a class="nav-link" href="{% url 'djangoapp:index' %}">🚗 Best Cars</a>
                 <a class="nav-link" href="{% url 'djangoapp:about' %}">🚙 About Us</a>
-                <a class="nav-link" href="{% url 'djangoapp:contact' %}">📞 Contact Us</a>
+                <a class="nav-link active" href="#">📞 Contact Us</a>
             </div>
         </div>
     </nav>
 
     <!-- Dealer table -->
     <section class="container mt-1">
-        <h1>Dealer table</h1>
-        <p>Work in progress</p>
+        <div class="card" style="width: 18rem">
+            <div class="card-body">
+                <h4 class="card-title">Contact US</h1>
+                <div class="card-text">Best Cars Inc.</div>
+                <div class="card-text">Some street #99</div>
+                <div class="card-text">Somewhere, Imagine City 101010, A Country</div>
+                <div class="card-text">✉️ email: contact@bestcars.com</div>
+                <div class="card-text">📞 Phone: +13456764598</div>
+            </div>
     </section>
 
 </body>
