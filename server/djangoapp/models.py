@@ -11,8 +11,8 @@ class CarMake(models.Model):
     def __str__(self):
         return f'CarMake: {self.name}'
 
-class CardModel(models.Model):
-    card_make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
+class CarModel(models.Model):
+    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
     name = models.CharField(null=False, max_length=250, default='Car Model')
     dealer_id = models.IntegerField(null=False, default=1)
     SEDAN = 'sedan'
@@ -42,7 +42,7 @@ class CardModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'CardModel: {self.name}'
+        return f'CarModel: {self.name}'
 
 class CarDealer:
     '''CarDealer (python class) to hold dealer data'''
