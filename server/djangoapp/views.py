@@ -3,7 +3,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
-# from .restapis import related methods
+from djangoapp.restapis import get_dealers_from_cf
+from djangoapp.restapis import get_dealer_by_id_from_cf
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -81,16 +82,33 @@ def registration_request(request):
             return render(request, 'djangoapp/registration.html', context)
 
 
-# Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
+    '''render the index page with a list of dealerships'''
     context = {}
+    allowed_filters = ('state', 'id',)
     if request.method == "GET":
-        return render(request, 'djangoapp/index.html', context)
+        filters = {}
+        for param in allowed_filters:
+            if request.GET.get(param, None):
+                filters[param] = request.GET[param]
+
+        url = 'https://us-south.functions.appdomain.cloud/api/v1/web/72fd15b8-548a-41f9-8562-2988b3e73207/dealership-package/get-dealership.json'
+        dealerships = get_dealers_from_cf(url, **filters)
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+
+        return HttpResponse(dealer_names)
+        # return render(request, 'djangoapp/index.html', context)
 
 
-# Create a `get_dealer_details` view to render the reviews of a dealer
-# def get_dealer_details(request, dealer_id):
-# ...
+# `get_dealer_details` view to render the reviews of a dealer
+def get_dealer_details(request, dealer_id):
+    context = {}
+    if request.method == 'GET':
+        url = 'https://us-south.functions.appdomain.cloud/api/v1/web/72fd15b8-548a-41f9-8562-2988b3e73207/dealership-package/get-review.json'
+        context['reviews'] = get_dealer_by_id_from_cf(url, dealer_id)
+        reviews = ' '.join([review.review for review in context['reviews']])
+        return HttpResponse(reviews)
+
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):

@@ -46,9 +46,44 @@ class CarModel(models.Model):
 
 class CarDealer:
     '''CarDealer (python class) to hold dealer data'''
-    pass
+    ALLOWED_FIELDS = (
+        'address',
+        'city',
+        'full_name',
+        'id',
+        'lat',
+        'long',
+        'short_name',
+        'st',
+        'state',
+        'zip',
+    )
+    def __init__(self, **kwargs):
+        for field in self.ALLOWED_FIELDS:
+            setattr(self, field, kwargs.get(field))
+
+    def __str__(self):
+        return "Dealer name: " + self.full_name
 
 class DealerReview:
     '''DealerReview (python class) to hold dealer data'''
-    pass
+    ALLOWED_FIELDS = (
+        'car_make',
+        'car_model',
+        'car_year',
+        'dealership',
+        'id',
+        'name',
+        'purchase_date',
+        'purchase',
+        'review',
+        'sentimient',
+    )
+
+    def __init__(self, **kwargs):
+        for field in self.ALLOWED_FIELDS:
+            setattr(self, field, kwargs.get(field))
+
+    def __str__(self):
+        return f'Review: {self.review}, Name: {self.name}'
 
