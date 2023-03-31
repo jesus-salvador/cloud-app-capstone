@@ -29,6 +29,15 @@ APPEND_SLASH = True
 
 ALLOWED_HOSTS = ["localhost"]
 
+# Environment variables
+from dotenv import load_dotenv
+load_dotenv()
+
+WATSON_ANALIZER_URL = os.environ.get('WATSON_ANALIZER_URL')
+WATSON_ANALIZER_API_KEY = os.environ.get('WATSON_ANALIZER_API_KEY')
+GET_DEALERSHIP_CF_URL = os.environ.get('GET_DEALERSHIP_CF_URL')
+GET_REVIEW_CF_URL = os.environ.get('GET_REVIEW_CF_URL')
+POST_REVIEW_CF_URL = os.environ.get('POST_REVIEW_CF_URL')
 
 # Application definition
 

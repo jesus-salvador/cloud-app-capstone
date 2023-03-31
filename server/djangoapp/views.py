@@ -1,10 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
+from http import HTTPStatus
+from django.conf import settings
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
 from djangoapp.restapis import get_dealers_from_cf
 from djangoapp.restapis import get_dealer_by_id_from_cf
+from djangoapp.restapis import post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -92,7 +95,7 @@ def get_dealerships(request):
             if request.GET.get(param, None):
                 filters[param] = request.GET[param]
 
-        url = 'https://us-south.functions.appdomain.cloud/api/v1/web/72fd15b8-548a-41f9-8562-2988b3e73207/dealership-package/get-dealership.json'
+        url = settings.GET_DEALERSHIP_CF_URL
         dealerships = get_dealers_from_cf(url, **filters)
         dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
 
@@ -104,13 +107,39 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     context = {}
     if request.method == 'GET':
-        url = 'https://us-south.functions.appdomain.cloud/api/v1/web/72fd15b8-548a-41f9-8562-2988b3e73207/dealership-package/get-review.json'
+        url = settings.GET_REVIEW_CF_URL
         context['reviews'] = get_dealer_by_id_from_cf(url, dealer_id)
+        sentimients = ' '.join([review.sentimient['label'] if review.sentimient.get('label') else review.sentimient['error'] for review in context['reviews']])
         reviews = ' '.join([review.review for review in context['reviews']])
         return HttpResponse(reviews)
 
+    if request.method == 'POST':
+        return add_review(request, dealer_id)
 
-# Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
+# `add_review` view to submit a review
+def add_review(request, dealer_id):
+    user = request.user
+    if not user.is_authenticated:
+        return HttpResponseForbidden()
 
+    review = {
+        'car_make': request.POST['car_make'],
+        'car_model': request.POST['car_model'],
+        'car_year': request.POST['car_year'],
+        'dealership': dealer_id,
+        'name': request.POST['name'],
+        'purchase_date': request.POST['purchase_date'],
+        'purchase': request.POST['purchase'],
+        'review': request.POST['review'],
+    }
+
+    url = settings.POST_REVIEW_CF_URL
+    json_payload = { 'review': review }
+    result = post_request(url, json_payload)
+
+    response = HttpResponse(result.text)
+    response.status_code = result.status_code
+    if result.status_code == 204:
+        response.status_code=HTTPStatus.CREATED
+
+    return response

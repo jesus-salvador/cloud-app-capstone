@@ -3,21 +3,28 @@ import json
 from djangoapp.models import CarDealer
 from djangoapp.models import DealerReview
 from requests.auth import HTTPBasicAuth
+from django.conf import settings
 
 
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
 #                                     auth=HTTPBasicAuth('apikey', api_key))
-def get_request(url, **kwargs):
+def get_request(url, api_key=None, **kwargs):
     print(kwargs)
     print(f'GET from {url}')
+
+    auth = None
+    if api_key:
+        auth = HTTPBasicAuth('apikey', api_key)
 
     try:
         # Call get method of requests library with URL and parameters
         response = requests.get(
             url,
             headers={'Content-Type': 'application/json'},
-            params=kwargs)
+            params=kwargs,
+            auth=auth
+        )
     except:
         # If any error occurs
         print('Network exception occurred')
@@ -26,8 +33,9 @@ def get_request(url, **kwargs):
     json_data = json.loads(response.text)
     return json_data
 
-# Create a `post_request` to make HTTP POST requests
-# e.g., response = requests.post(url, params=kwargs, json=payload)
+# `post_request` to make HTTP POST requests
+def post_request(url, json_payload, **kwargs):
+    return requests.post(url, params=kwargs, json=json_payload)
 
 
 # get_dealers_from_cf method to get dealers from a cloud function
@@ -52,15 +60,28 @@ def get_dealer_by_id_from_cf(url, dealerId):
         reviews = json_result['entries']
         for review in reviews:
             dealer_review = DealerReview(**review)
+            # Watson NLU result
+            dealer_review.sentimient = analyze_review_sentiments(dealer_review.review)
             results.append(dealer_review)
 
     return results
 
 
-# Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-# def analyze_review_sentiments(text):
-# - Call get_request() with specified arguments
-# - Get the returned sentiment label such as Positive or Negative
+# `analyze_review_sentiments` method to call Watson NLU and analyze text
+def analyze_review_sentiments(text):
+    params = {}
+    url = settings.WATSON_ANALIZER_URL
+    url += '/v1/analyze'
+    api_key = settings.WATSON_ANALIZER_API_KEY
+    params['version'] =  '2022-04-07'
+    params['text'] = text
+    params['features'] = 'sentiment'
+    params['return_analyzed_text'] = 'true'
 
+    analyzed_result = get_request(url, api_key=api_key, **params)
+    # Get the returned sentiment label such as Positive or Negative
+    if analyzed_result.get('sentiment'):
+        return analyzed_result['sentiment']['document']
 
+    return analyzed_result
 
