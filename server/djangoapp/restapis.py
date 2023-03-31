@@ -81,7 +81,7 @@ def analyze_review_sentiments(text):
     analyzed_result = get_request(url, api_key=api_key, **params)
     # Get the returned sentiment label such as Positive or Negative
     if analyzed_result.get('sentiment'):
-        return analyzed_result['sentiment']['document']
+        return analyzed_result['sentiment']['document']['label']
 
-    return analyzed_result
+    return 'neutral'
 

@@ -6,13 +6,57 @@
     {% load static %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
-
     <body>
-
-    <!--Add a nav bar here -->
+        <!-- Navigation bar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="navbar-nav mr-auto">
+                <a class="nav-link" href="{% url 'djangoapp:index' %}">🚗 Best Cars</a>
+                <a class="nav-link" href="{% url 'djangoapp:about' %}">🚙 About Us</a>
+                <a class="nav-link" href="{% url 'djangoapp:contact' %}">📞 Contact Us</a>
+            </div>
+            {% if user.is_authenticated %}
+            <div>
+                <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
+                <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+            </div>
+            {% else %}
+            <form class="form-inline my-2 my-lg-0" action="{% url 'djangoapp:login' %}" method="post">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input class="form-control mr-sm-2" type="text" placeholder="username" name="username">
+                    <input type="password" class="form-control mr-sm-2" placeholder="password" name="password">
+                    <button class="btn btn-primary mr-sm-2" type="submit">Login</button>
+                </div>
+                    <a class="btn btn-outline-light" href="{% url 'djangoapp:registration' %} ">Sign Up</a>
+            </form>
+            {% endif %}
+            {% if user.is_authenticated %}
+        </nav>
+        <section class="container">
+            <div class="d-flex justify-content-between pt-2 pb-3">
+                <h2>{{ delership.full_name }}</h2>
+                <a class="btn btn-primary mt-1 mb-1" href="#" role="button">Add review</a>
+            </div>
+        </section>
+        {% endif %}
 
     <!-- Add reviews as cards -->
+    <div class="container">
+        <div class="card-columns">
+        {% for review in reviews %}
+            <div class="card">
+                <img class="card-img-left m-2" src="{{MEDIA_URL}}/emoji/{{ review.sentimient }}.png" alt="{{ review.sentimient }} face" width="61" height="61">
+                <div class="card-body bg-light">
+                    <h5 class="card-title">{{ review.sentimient }}</h5>
+                    <h5 class="card-title">{{ review.car_model }}</h5>
+                    <h5 class="card-title">{{ review.car_make }}</h5>
+                    <h5 class="card-title">{{ review.purchase_date|date:"Y" }}</h5>
+                    <p class="card-text">{{ review.review }}</p>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
 
     </body>
-
 </html>

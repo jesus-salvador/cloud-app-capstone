@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.timezone import now
+import datetime
 
 
 class CarMake(models.Model):
@@ -83,6 +84,9 @@ class DealerReview:
     def __init__(self, **kwargs):
         for field in self.ALLOWED_FIELDS:
             setattr(self, field, kwargs.get(field))
+        if self.purchase_date:
+            month, day, year = self.purchase_date.split('/')
+            self.purchase_date = datetime.date(int(year), int(month), int(day))
 
     def __str__(self):
         return f'Review: {self.review}, Name: {self.name}'

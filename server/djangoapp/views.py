@@ -97,10 +97,9 @@ def get_dealerships(request):
 
         url = settings.GET_DEALERSHIP_CF_URL
         dealerships = get_dealers_from_cf(url, **filters)
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        context['dealerships'] = dealerships
 
-        return HttpResponse(dealer_names)
-        # return render(request, 'djangoapp/index.html', context)
+        return render(request, 'djangoapp/index.html', context)
 
 
 # `get_dealer_details` view to render the reviews of a dealer
@@ -109,9 +108,9 @@ def get_dealer_details(request, dealer_id):
     if request.method == 'GET':
         url = settings.GET_REVIEW_CF_URL
         context['reviews'] = get_dealer_by_id_from_cf(url, dealer_id)
-        sentimients = ' '.join([review.sentimient['label'] if review.sentimient.get('label') else review.sentimient['error'] for review in context['reviews']])
-        reviews = ' '.join([review.review for review in context['reviews']])
-        return HttpResponse(reviews)
+        url = settings.GET_DEALERSHIP_CF_URL
+        context['delership'] = get_dealers_from_cf(url, id=dealer_id)[0]
+        return render(request, 'djangoapp/dealer_details.html', context)
 
     if request.method == 'POST':
         return add_review(request, dealer_id)
