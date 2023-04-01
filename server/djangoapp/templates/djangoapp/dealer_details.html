@@ -34,8 +34,8 @@
         </nav>
         <section class="container">
             <div class="d-flex justify-content-between pt-2 pb-3">
-                <h2>{{ delership.full_name }}</h2>
-                <a class="btn btn-primary mt-1 mb-1" href="#" role="button">Add review</a>
+                <h2>{{ dealership.full_name }}</h2>
+                <a class="btn btn-primary mt-1 mb-1" href="{% url 'djangoapp:add_review' dealership.id %}" role="button">Add review</a>
             </div>
         </section>
         {% endif %}

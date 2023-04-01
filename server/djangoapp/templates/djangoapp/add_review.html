@@ -11,6 +11,78 @@
 
 </head>
     <body>
-    <!--Add review form here -->
+        <!-- Navigation bar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="navbar-nav mr-auto">
+                <a class="nav-link" href="{% url 'djangoapp:index' %}">🚗 Best Cars</a>
+                <a class="nav-link" href="{% url 'djangoapp:about' %}">🚙 About Us</a>
+                <a class="nav-link" href="{% url 'djangoapp:contact' %}">📞 Contact Us</a>
+            </div>
+            {% if user.is_authenticated %}
+            <div>
+                <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
+                <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+            </div>
+            {% else %}
+            <form class="form-inline my-2 my-lg-0" action="{% url 'djangoapp:login' %}" method="post">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input class="form-control mr-sm-2" type="text" placeholder="username" name="username">
+                    <input type="password" class="form-control mr-sm-2" placeholder="password" name="password">
+                    <button class="btn btn-primary mr-sm-2" type="submit">Login</button>
+                </div>
+                    <a class="btn btn-outline-light" href="{% url 'djangoapp:registration' %} ">Sign Up</a>
+            </form>
+            {% endif %}
+            {% if user.is_authenticated %}
+        </nav>
+        {% endif %}
+
+        <!-- Add reviewr form -->
+        <form action="{% url 'djangoapp:add_review' dealer_id %}" method="post">
+            <div class="container">
+                {% csrf_token %}
+                <h1>Add Review about {{ dealership.full_name }}</h1>
+                <hr>
+                <div class="form-group">
+                    <label for="review"><b>Review content:</b></label>
+                    <textarea class="form-control" id="review" name="review" rows="2" placeholder="This is a great car dealer " required></textarea>
+                </div>
+                <div class="form-group">
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" id="purchase" type="checkbox" name="purchase">
+                        <label for="firstname" class="form-check-label"><b>Has purchased the car from {{ dealership.full_name }}?</b><small id="emailHelp" class="form-text text-muted">(select purchased car information below if checked)</small></label>
+                    </div>
+                    <label for="car_id" class="mt-2"><b>Car:</b></label>
+                    <select name="car_id" id="car_id" class="form-select" required>
+                        {% for car in cars %}
+                            <option selected value={{car.id}}>{{car.name}}-{{car.car_make.name}}-{{ car.year|date:"Y" }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="purchase_date" class="mt-1"><b>Purchase date:</b></label>
+                    <input class="date-own form-control" type="text" name="purchase_date" id="purchase_date">
+
+                    {% if message %}
+                    <div class="alert alert-warning mt-2">
+                        {{ message }}
+                    </div>
+                    {% endif %}
+
+                </div>
+                {% if message %}
+                    <div class="alert alert-warning">
+                        {{ message }}
+                    </div>
+                {% endif %}
+                <button class="btn btn-primary mt-2" type="submit">Save</button>
+            </div>
+        </form>
     </body>
+    <script type="text/javascript">
+        $('.date-own').datepicker({
+            format: 'mm/dd/yyyy'
+        });
+    </script>
 </html>
