@@ -30,8 +30,8 @@
                     <a class="btn btn-outline-light" href="{% url 'djangoapp:registration' %} ">Sign Up</a>
             </form>
             {% endif %}
-            {% if user.is_authenticated %}
         </nav>
+        {% if user.is_authenticated %}
         <section class="container">
             <div class="d-flex justify-content-between pt-2 pb-3">
                 <h2>{{ dealership.full_name }}</h2>
@@ -42,7 +42,7 @@
 
     <!-- Add reviews as cards -->
     <div class="container">
-        <div class="card-columns">
+        <div class="card-columns  mt-4">
         {% for review in reviews %}
             <div class="card">
                 <img class="card-img-left m-2" src="{{MEDIA_URL}}/emoji/{{ review.sentimient }}.png" alt="{{ review.sentimient }} face" width="61" height="61">
